@@ -73,4 +73,32 @@ class InvoiceController extends Controller
             return ResponseHelper::Out('failed', $e, 500);
         }
     }
+
+    function InvoiceList(Request $request) {
+        $user_id = $request->header('id');
+        return Invoice::where('user_id', $user_id)->get();
+    }
+
+    function InvoiceProductList(Request $request) {
+        $user_id = $request->header('id');
+        $invoice_id = $request->invoice_id;
+        return InvoiceProduct::where(['user_id' => $user_id, 'invoice_id' => $invoice_id])->with('product')->get();
+    }
+
+    function PaymentSuccess(Request $request) {
+        return SSLCommerz::InitiateSuccess($request->query('transaction_id'));
+    }
+
+    function PaymentFailed(Request $request) {
+        return SSLCommerz::InitiateFail($request->query('transaction_id'));
+    }
+
+    function PaymentCancel(Request $request) {
+        return SSLCommerz::InitiateCancel($request->query('transaction_id'));
+    }
+
+    function PaymnetIPN(Request $request) {
+        return SSLCommerz::InitiateIPN($request->input('transaction_id'), $request->input('status'), $request->input('validation_id'));
+    }
+
 }

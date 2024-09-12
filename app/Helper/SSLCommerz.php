@@ -9,46 +9,45 @@ use Illuminate\Support\Facades\Http;
 
 class SSLCommerz 
 {
-    static function InitiatePayment($Profile, $payable, $transaction_id, $user_email): array {
+    static function InitiatePayment($Profile, $payable, $transaction_id, $user_email)
+    {
         try {
             $ssl = SslcommerzAccount::first();
-            $response = Http::asForm()->post($ssl->init_url, [
-                "store_id" => $ssl->store_id,
-                "store_password" => $ssl->store_password,
-                "total_amount" => $payable,
-                "currency" => $ssl->currency,
-                "transaction_id" => $transaction_id,
-                "success_url" => "$ssl->success_url?transaction_id=$transaction_id",
-                "fail_url" => "$ssl->fail_url?transaction_id=$transaction_id",
-                "cancel_url" => "$ssl->cancel_url?transaction_id=$transaction_id",
-                "ipn_url" => $ssl->ipn_url,
 
-                // Customer Information
-                "customer_name" => $Profile->customer_name,
-                "customer_email" => $user_email,
-                "customer_address1" => $Profile->customer_address,
-                "customer_address2" => $Profile->customer_address,
-                "customer_city" => $Profile->customer_city,
-                "customer_state" => $Profile->customer_state,
-                "customer_postcode" => "3900",
-                "customer_country" => $Profile->customer_country,
-                "customer_phone" => $Profile->customer_phone,
-                "customer_fax" => $Profile->customer_fax,
+            $response = Http::asForm()->post($ssl->init_url,[
+                "store_id"=>$ssl->store_id,
+                "store_passwd"=>$ssl->store_password,
+                "total_amount"=>$payable,
+                "currency"=>$ssl->currency,
+                "tran_id"=>$transaction_id,
+                "success_url"=>"$ssl->success_url?tran_id=$transaction_id",
+                "fail_url"=>"$ssl->fail_url?tran_id=$transaction_id",
+                "cancel_url"=>"$ssl->cancel_url?tran_id=$transaction_id",
+                "ipn_url"=>$ssl->ipn_url,
 
-                // Shipment Information
-                "shipping_method" => "YES",
-                "ship_name" => $Profile->ship_name,
-                "ship_address1" => $Profile->ship_address,
-                "ship_address2" => $Profile->ship_address,
-                "ship_city" => $Profile->ship_city,
-                "ship_state" => $Profile->ship_state,
-                "ship_postcode" => "3900",
-                "ship_country" => $Profile->ship_country,
-
-                "product_name" => "Apple Shop Product",
-                "product_category" => "Apple Shop Category",
-                "product_profile" => "Apple Shop Profile",
-                "product_amount" => $payable
+                "cus_name"=>$Profile->customer_name,
+                "cus_email"=>$user_email,
+                "cus_add1"=>$Profile->customer_address,
+                "cus_add2"=>$Profile->customer_address,
+                "cus_city"=>$Profile->customer_city,
+                "cus_state"=>$Profile->customer_city,
+                "cus_postcode"=>"1200",
+                "cus_country"=>$Profile->customer_country,
+                "cus_phone"=>$Profile->customer_phone,
+                "cus_fax"=>$Profile->customer_phone,
+                
+                "shipping_method"=>"YES",
+                "ship_name"=>$Profile->ship_name,
+                "ship_add1"=>$Profile->ship_address,
+                "ship_add2"=>$Profile->ship_address,
+                "ship_city"=>$Profile->ship_city,
+                "ship_state"=>$Profile->ship_city,
+                "ship_country"=>$Profile->ship_country ,
+                "ship_postcode"=>"12000",
+                "product_name"=>"Apple Shop Product",
+                "product_category"=>"Apple Shop Category",
+                "product_profile"=>"Apple Shop Profile",
+                "product_amount"=>$payable,
             ]);
 
             return $response->json('desc');
